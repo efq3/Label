@@ -70,16 +70,25 @@
     </div>
     <button onclick="resetCheckboxes()">Reset</button>
 
-    <script>
+    <p>마지막 업데이트: <span id="lastUpdateTime">없음</span></p> <!-- 마지막 업데이트 시간 표시 -->
+
+    <script>        
         // 고유 페이지 식별자 설정
         const pageIdentifier = 'page5'; // 페이지마다 이 값을 다르게 설정
 
-        // Function to save the state of checkboxes to localStorage
+        // Function to save the state of checkboxes and the last updated time to localStorage
         function saveCheckboxState() {
             const checkboxes1 = document.querySelectorAll('input[type="checkbox"]');
             checkboxes1.forEach((checkbox1, index) => {
                 localStorage.setItem(`${pageIdentifier}_checkbox${index + 1}`, checkbox1.checked);
             });
+
+            // 현재 시간을 저장 (마지막 업데이트 시간)
+            const currentTime = new Date().toLocaleString();
+            localStorage.setItem(`${pageIdentifier}_lastUpdated`, currentTime);
+
+            // 마지막 업데이트 시간을 화면에 표시
+            document.getElementById("lastUpdateTime").textContent = currentTime;
         }
 
         // Function to load the state of checkboxes from localStorage
@@ -89,6 +98,12 @@
                 const savedState = localStorage.getItem(`${pageIdentifier}_checkbox${index + 1}`);
                 checkbox1.checked = savedState === 'true'; // Restore the saved state
             });
+
+            // 마지막 업데이트 시간 불러오기
+            const lastUpdated = localStorage.getItem(`${pageIdentifier}_lastUpdated`);
+            if (lastUpdated) {
+                document.getElementById("lastUpdateTime").textContent = lastUpdated;
+            }
         }
 
         // Function to reset all checkboxes
@@ -98,6 +113,11 @@
                 checkbox1.checked = false; // Uncheck all
                 localStorage.setItem(`${pageIdentifier}_checkbox${index + 1}`, false); // Update storage
             });
+
+            // 마지막 업데이트 시간도 초기화
+            const resetTime = new Date().toLocaleString();
+            localStorage.setItem(`${pageIdentifier}_lastUpdated`, resetTime);
+            document.getElementById("lastUpdateTime").textContent = resetTime;
         }
 
         // Event listener to save state whenever a checkbox is toggled
